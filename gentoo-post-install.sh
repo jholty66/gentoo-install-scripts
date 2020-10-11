@@ -4,13 +4,25 @@ GITDIR=$(pwd)
 USER=charile
 
 ### Add users with sudo privlages
+echo ""
+echo "Installing sudo."
+echo ""
 emerge --ask=n sudo
+echo ""
+echo "Modify sudoers file."
+echo ""
 nano /etc/sudoers
 useradd -m -G wheel,audio,video $USER
+echo ""
+echo "Set user password."
+echo ""
 passwd $USER
 
 ### Setup Emacs
 # Add emacs use fag to "/etc/portage/make.conf"
+echo ""
+echo "Installing Emacs."
+echo ""
 time emerge --ask=n emacs
 git clone https://jholty66/.emacs.d.git /home/$USER/.emacs.d/
 
