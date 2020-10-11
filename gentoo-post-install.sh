@@ -24,7 +24,7 @@ echo ""
 echo "Installing Emacs."
 echo ""
 time emerge --ask=n emacs
-git clone https://jholty66/.emacs.d.git /home/$USER/.emacs.d/
+git clone https://gitub.com/jholty66/.emacs.d.git /home/$USER/.emacs.d/
 
 ### Change portage to use git instead of rsync
 cp $GITDR/gentoo.conf /etc/portage/repos.conf/gentoo.conf
