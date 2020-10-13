@@ -11,7 +11,7 @@ Genkernel can be replaced with a customized kernel configuration.
 There is minimal user input, all customizations are set as shell
 variables. These are changed by editing the script directly. Config
 files are customized by editing the desired file in teh "Config files"
-directory.
+directory. 
 
 *How to get the scritps*
 
