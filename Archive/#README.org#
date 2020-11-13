@@ -1,0 +1,36 @@
+*What the scripts do*
+
+The script performs a minimal install of Gentoo with System-D and
+GenKernel automatically without any user input once it is executed.
+
+Similarly, Genkernel is used to both avoid manually configuring the
+kernel and to narror the points of failure when booting in the system
+for the first time. Once the system has been booted successfully,
+Genkernel can be replaced with a customized kernel configuration.
+
+There is minimal user input, all customizations are set as shell
+variables. These are changed by editing the script directly. Config
+files are customized by editing the desired file in teh "Config files"
+directory. 
+
+*How to get the scritps*
+
+If the iso installer has git, clone the repository at the beginning of
+the installation, otherwise clone it onto a USB and then mount it during
+installation.
+
+=git clone https://github.com/jholty66/gentoo-insaller=
+
+
+*How to use the scripts*
+
+- "Partition mounting, formatting and creation" contains scripts that
+  configure the partiton table and file systems. Scripts that manage the
+  installations are not dependent on these scripts. These scripts can be
+  optionally run.
+
+- Scripts in the "Install directory" perform a minimal install of Gentoo
+  with System-D and GenKernel.
+
+- Scripts in "Post install" can be optionally run which automate tasks
+  such as setting up Xorg.

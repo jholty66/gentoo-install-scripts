@@ -1,0 +1,4 @@
+dev-util/arch-install-scripts ~amd64
+sys-kernel/spl ~amd64
+sys-fs/zfs ~amd64
+sys-fs/zfs-kmod ~amd64
