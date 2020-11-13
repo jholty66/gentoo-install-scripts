@@ -28,7 +28,7 @@ cp $GITDIR/package.use /mnt/gentoo/etc/portage/
 [ -f "/etc/portage/make.conf" ] && cp /etc/portage/make.conf /mnt/gentoo/etc/portage/make.conf.def
 [ -f "/mnt/gentoo/etc/portage/make.conf" ] && rm /mnt/gentoo/etc/portage/make.conf
 cp -f $GITDIR/make.conf /mnt/gentoo/etc/portage/
-echo $MAKE_CONF >> /mnt/gentoo/etc/portage/make.conf
+echo "$MAKE_CONF" >> /mnt/gentoo/etc/portage/make.conf
 
 cp $GITDIR/{package.accept_keywords,package.license} /mnt/gentoo/etc/portage/
 
