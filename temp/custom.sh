@@ -16,8 +16,8 @@ EDITOR="emacs"
 
 ### /etc/porage/ files
 # The following is appended to "/etc/portage/make.conf".
-MAKE_CONF="EMERGE_DEFAULTOPTS=\"--ask --keep-going --jobs ${CORES} --load-average ${CORES}.0\"
-FEATURES=\"parallel-fetch parallel-install\"
+MAKE_CONF="EMERGE_DEFAULTOPTS=\"--ask --keep-going --jobs ${CORES} --load-average ${CORES}.0\"\n
+FEATURES=\"parallel-fetch parallel-install\"\n
 USE=\"systemd threads -gui -sound\" # savedconfig does not currently work for sys-kernel/linux-firmware"
 
 ### Shell commands

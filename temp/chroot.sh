@@ -25,7 +25,7 @@ env-update && source /etc/profile; source /root/custom.sh
 echo "
 Creating fstab"
 cp /etc/fstab{,.def}
-/root/genfstab -U -p / >> /etc/fstab
+genfstab -U -p / >> /etc/fstab
 
 ### Kernel
 echo "
