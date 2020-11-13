@@ -16,14 +16,13 @@ EDITOR="emacs"
 
 ### /etc/porage/ files
 # The following is appended to "/etc/portage/make.conf".
-MAKE_CONF="EMERGE_DEFAULT_OPTS=\"--ask --keep-going --jobs ${CORES} --load-average ${CORES}.0\"
+MAKE_CONF="EMERGE_DEFAULTOPTS=\"--ask --keep-going --jobs ${CORES} --load-average ${CORES}.0\"
 FEATURES=\"parallel-fetch parallel-install\"
-MAKEOPTS=\"-j4 -l4\"
 USE=\"systemd threads -gui -sound\" # savedconfig does not currently work for sys-kernel/linux-firmware"
 
 ### Shell commands
 # Emerge command.
-EMERGE="emerge --ask=n"
+EMERGE="time emerge --ask=n"
 
 # Genkernel command.
 GENKERNEL="genkernel --makeopts=-j${CORES} all"

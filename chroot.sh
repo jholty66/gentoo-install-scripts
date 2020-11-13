@@ -1,6 +1,8 @@
 #!/bin/sh
 
-source {/etc/profile,/root/custom.sh}
+/usr/sbin/env-update
+source /etc/profile
+source /root/custom.sh
 
 ### Syncronise portage.
 echo "
@@ -25,7 +27,7 @@ env-update && source /etc/profile; source /root/custom.sh
 echo "
 Creating fstab"
 cp /etc/fstab{,.def}
-/root/genfstab -U -p / >> /etc/fstab
+/root/genfstab.sh -U -p / >> /etc/fstab
 
 ### Kernel
 echo "
@@ -66,3 +68,4 @@ passwd
 # $INSTALL_BOOTLOADER
 
 $EMERGE efibootmgr
+install_bootloader
