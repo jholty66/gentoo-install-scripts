@@ -1,3 +1,0 @@
-sys-apps/systemd gnuefi cryptsetup
-sys-fs/cryptsetup luks1_default
-sys-kernel/dracut systemd device-mapper

@@ -1,17 +1,37 @@
+*About*
+
+Personal Gentoo installation scripts. They largely contian the commands
+seen in https://wiki.gentoo.org/wiki/Quick_Installation_Checklist but
+with a small number of shell variables to alter the installation from
+machine to machine.
+
+Customizations are set as shell variables in a descrete file and can be
+changed by editing the file directly. Customizations to =.conf= are
+achieved by editing the provided =.conf= files. It is recommended to
+read all the scripts before using them to install Gentoo.
+
+Any additional customizations not defined in the scripts can be done by
+chrooting (again) into the installation before rebooting.
+
 *What the scripts do*
 
-The script performs a minimal install of Gentoo with System-D and
-GenKernel automatically without any user input once it is executed.
+Assuming disks have been partitoned and mounted, the script performs a
+minimal install of Gentoo with System-D, GenKernel and on either ZFS and
+BTRFS (see customization) automatically with minimal user input once it
+is executed.
 
 Similarly, Genkernel is used to both avoid manually configuring the
 kernel and to narror the points of failure when booting in the system
 for the first time. Once the system has been booted successfully,
 Genkernel can be replaced with a customized kernel configuration.
 
-There is minimal user input, all customizations are set as shell
-variables. These are changed by editing the script directly. Config
-files are customized by editing the desired file in teh "Config files"
-directory.
+*What the scripts do not do*
+
+They do not automate creating, partioning and mounting filesystems, this
+can vary largely depending on the user, it is simpler on both ends to
+choose manual partition management. When modifying =custom.sh=, add each
+filesystem's package in the =tools= variable to make all chosen
+filesytems supported on first boot.
 
 *How to get the scritps*
 
@@ -21,16 +41,14 @@ installation.
 
 =git clone https://github.com/jholty66/gentoo-insaller=
 
-
 *How to use the scripts*
 
-- "Partition mounting, formatting and creation" contains scripts that
-  configure the partiton table and file systems. Scripts that manage the
-  installations are not dependent on these scripts. These scripts can be
-  optionally run.
+Modify =custom.sh=, to suit hardware and customization preferences. Read
+all of the scripts (200 lines of code) before installing as they are
+only used on my personal computers. cd into the cloned repository. Call:
 
-- Scripts in the "Install directory" perform a minimal install of Gentoo
-  with System-D and GenKernel.
+=sh install.sh=
 
-- Scripts in "Post install" can be optionally run which automate tasks
-  such as setting up Xorg.
+If the scripts are terminated before chanding root, run =sh
+bootstrap.sh= to continue. If the scripts are terminated after changing
+root, run =sh chrot.sh= to continue.
