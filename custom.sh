@@ -69,8 +69,8 @@ case "$BOOTLOADER" in
                  IMAGE=$(ls /boot/ | grep vmlinuz-.*-gentoo-x86_64$)
                  cp  /boot/$IMAGE /boot/EFI/Gentoo/bootx64.efi
                  INITRAMFS=$(ls /boot/ | grep initramfs-.*-gentoo-x86_64.img$)
-                 cp /boot/$INITRAMFS /boot/EFI/Gentoo/
-                 efibootmgr --disk $EFI_DISK --part ${EFI_PARTITION: -1} --create --label "Gentoo" --loader "\EFI\Gentoo\bootx64.efi" --unicode 'root=ZFS=zroot/gentoo dozfs initrd=\EFI\Gentoo\${INITRAMFS}'
+                 cp /boot/$INITRAMFS /boot/EFI/Gentoo/initramfs
+                 efibootmgr --disk $EFI_DISK --part ${EFI_PARTITION: -1} --create --label "Gentoo" --loader "\EFI\Gentoo\bootx64.efi" --unicode "dozfs root=ZFS=zroot/gentoo initrd=\EFI\Gentoo\initramfs"
              } ;;
     systemd) USE="${USE} gnuefi";;
     grub2)  ;;
