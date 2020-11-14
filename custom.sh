@@ -9,7 +9,7 @@ BOOTLOADER="efistub" # "efistub", "systemd-boot", "grub2"
 CORES=4
 # The combination of these is the full path of the ESP, "/dev/nvme0np1".
 EFI_DISK="/dev/nvme0n1"
-EFI_PARTION="p1"
+EFI_PARTITION="p1"
 
 # Editor
 EDITOR="emacs"
@@ -42,17 +42,17 @@ LUKS="" # "1", "2", anything else means no LUKS encryption
 
 case "$FS" in
     btrfs) ;;
-    zfs) PACKAGE_USE="${PACKAGEUSE}
+    zfs) PACKAGE_USE="${PACKAGE_USE}
 >=sys-apps/util-linux-2.30.2 static-libs"
-         GENKERNEL="${GENKERNEL}; ${EMERGE} sys-fs/zfs sys-fs/zfs-kmod sys-kernel/spl; ${GENKERNEL} --zfs; genkernel initframfs"
+         GENKERNEL="${GENKERNEL} --no-zfs; ${EMERGE} sys-fs/zfs sys-fs/zfs-kmod; ${GENKERNEL} --zfs; genkernel initframfs"
          ACCEPT_KEYWORDS="sys-kernel/spl ~amd64
 sys-fs/zfs ~amd64
 sys-fs/zfs-kmod ~amd64"
-         SERVICES="${SERVICES}
-systemctl enable zfs-import boot
-systemctl enable zfs-mount boot
-systemctl enable zfs-share default
-systemctl enable zfs-zed default";;
+         SERVICES="${SERVICES} \
+systemctl enable zfs.target
+systemctl enable zfs-import-cache \
+systemctl enable zfs-mount \
+systemctl enable zfs-import.target";;
 esac
 
 #### Encryption
@@ -66,10 +66,11 @@ case "$BOOTLOADER" in
     efistub) install_bootloader () {
                  dir=$(pwd)
                  mkdir --parents /boot/EFI/Gentoo/
-                 cp  /boot/vmlinux-* /boot/EFI/Gentoo/bootx64.efi
-                 # efibootmgr -c -L "EFI Stub" -l '\EFI\Gentoo\bzImage-*.efi'
-                 INITRAMFS=$(ls | grep initramfs-*-gentoo)
-                 efibootmgr -c -d $EFI_DISK --part ${EFI_PARTITION: -1} --label "Gentoo" --loader "\EFI\gentoo\bootx64.efi" initrd='\${INITRAMFS}'
+                 IMAGE=$(ls /boot/ | grep vmlinuz-.*-gentoo-x86_64$)
+                 cp  /boot/$IMAGE /boot/EFI/Gentoo/bootx64.efi
+                 INITRAMFS=$(ls /boot/ | grep initramfs-.*-gentoo-x86_64.img$)
+                 cp /boot/$INITRAMFS /boot/EFI/Gentoo/
+                 efibootmgr --disk $EFI_DISK --part ${EFI_PARTITION: -1} --create --label "Gentoo" --loader "\EFI\Gentoo\bootx64.efi" --unicode 'root=ZFS=zroot/gentoo dozfs initrd=\EFI\Gentoo\${INITRAMFS}'
              } ;;
     systemd) USE="${USE} gnuefi";;
     grub2)  ;;

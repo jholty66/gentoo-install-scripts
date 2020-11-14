@@ -11,8 +11,8 @@ time (emerge-webrsync && $EMERGE --update --deep --newuse @world)
 ### Configuration.
 echo -e "\nConfiguraing timezone and locale."
 echo "Europe/London" > /etc/timezone
-emerge --config sys-libs/timezone-data
-echo "en_GB.UTF-8 UTF-8"
+emerge --ask=n --config sys-libs/timezone-data
+echo "en_GB.UTF-8 UTF-8" > /etc/locale.gen
 locale-gen
 env-update && source /etc/profile; source /root/custom.sh
 
@@ -37,7 +37,7 @@ echo -e "\nCompiling kernel.\n"
 DIR=$(pwd)
 cd /usr/src/linux
 make menuconfig
-time $GENKERNEL
+time (echo $GENKERNEL | source /dev/stdin)
 cd $DIR
 
 ### Tools and services.
