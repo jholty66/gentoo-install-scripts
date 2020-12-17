@@ -29,6 +29,7 @@ $EMERGE --nodeps arch-install-scripts asciidoc
 cp /etc/fstab{,.def}
 echo -e "\nGenerating fstab.\n"
 genfstab -U -p / >> /etc/fstab
+cat /etc/fstab
 
 ### Kernel
 echo -e "\nEmerging kernel sources.\n"
