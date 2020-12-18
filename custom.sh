@@ -66,12 +66,21 @@ case "$BOOTLOADER" in
     efistub) install_bootloader () {
                  dir=$(pwd)
                  mkdir --parents /boot/EFI/Gentoo/
-                 IMAGE=$(ls /boot/ | grep vmlinuz-.*-gentoo-x86_64$)
+                 IMAGE=$(ls /boot/ | grep vmlinuz.*gentoo.*x86_64$)
                  cp  /boot/$IMAGE /boot/EFI/Gentoo/bootx64.efi
-                 INITRAMFS=$(ls /boot/ | grep initramfs-.*-gentoo-x86_64.img$)
+                 INITRAMFS=$(ls /boot/ | grep initramfs.*gentoo.*x86_64.img$)
                  cp /boot/$INITRAMFS /boot/EFI/Gentoo/initramfs
-                 efibootmgr --disk $EFI_DISK --part ${EFI_PARTITION: -1} --create --label "Gentoo" --loader "\EFI\Gentoo\bootx64.efi" --unicode "dozfs root=ZFS=zroot/gentoo initrd=\EFI\Gentoo\initramfs"
+                 efibootmgr --disk $EFI_DISK --part ${EFI_PARTITION: -1} --create --label "Gentoo" --loader "\EFI\Gentoo\bootx64.efi" --unicode "dozfs=cache root=ZFS=zroot/gentoo initrd=\EFI\Gentoo\initramfs"
              } ;;
-    systemd) USE="${USE} gnuefi";;
+    systemd) install_bootloader () {
+		dir=$(pwd)
+		IMAGE=$(ls /boot/ | grep vmlinuz.*gentoo.*x86_64$)
+		INITRAMFS=$(ls /boot/ | grep initramfs.*gentoo.*x86_64.img$)
+		bootctl --path=/boot install
+		echo "title	Gentoo Linux
+linux	/$IMAGE
+initrd	/$INITRAMFS
+options dozfs=cache zfs=ZFS=zroot/gentoo" > /boot/loader/entries/gentoo.conf
+             };
     grub2)  ;;
 esac
