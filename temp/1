@@ -1,5 +1,0 @@
-Some        
-text
-EMERGE_DEFAULTOPTS="--ask --keep-going --jobs 4 --load-average 4.0"
-FEATURES="parallel-fetch parallel-install"
-USE="systemd threads -gui -sound" # savedconfig does not currently work for sys-kernel/linux-firmware

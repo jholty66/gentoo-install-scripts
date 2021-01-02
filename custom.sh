@@ -52,7 +52,8 @@ sys-fs/zfs-kmod ~amd64"
 systemctl enable zfs.target
 systemctl enable zfs-import-cache \
 systemctl enable zfs-mount \
-systemctl enable zfs-import.target";;
+systemctl enable zfs-import.target \
+systemctl enable zfs-zed";;
 esac
 
 #### Encryption
