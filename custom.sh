@@ -43,5 +43,5 @@ case "$FS" in
 			emerge sys-fs/zfs sys-fs/zfs-kmod # ZFS needs to be reinstalled after every kernel compile.
 			zgenhostid
 		}
-		KERNEL_EXIT_HOOK="$KERNEL_EXIT_HOOK KERNEL_ZFS" ;;
+		KERNEL_EXIT_HOOK="$KERNEL_EXIT_HOOK;KERNEL_ZFS" ;;
 esac
