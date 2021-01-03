@@ -22,14 +22,8 @@ SERVICES="zfs.target zfs-import-cache  zfs-mount zfs-import.target zfs-share zfs
 # Functions.
 KERNEL_INSTALL() { genkernel --makeopts=-j{cores} all }
 # Hooks.
-KERNEL_ENTER_HOOK(){}
-KERNEL_EXIT_HOOK() {
-	emerge sys-fs/zfs sys-fs/zfs-kmod
-	cd /usr/src/linux
-	# Write sed commands to active options.
-	genkernel --zfs
-	emerge sys-fs/zfs sys-fs/zfs-kmod # ZFS needs to be reinstalled after every kernel compile.
-	zgenhostid
+KERNEL_ENTER_HOOK=""
+KERNEL_EXIT_HOOK=""
 }
 # Ignore.
 case "$FS" in
@@ -40,5 +34,14 @@ case "$FS" in
 			openrc) SERVICES="zfs-import $SERVICES" ;;
 			systemd) SERVICES="zfs.target zfs-import-cache $SERVICES zfs-import.target" ;;
 		esac
-		KERNEL_RAMDISKOPTS="$KERNEL_RAMDISKOPTS --zfs" ;;
+		KERNEL_RAMDISKOPTS="$KERNEL_RAMDISKOPTS --zfs" 
+		KERNEL_ZFS() {
+			emerge sys-fs/zfs sys-fs/zfs-kmod
+			cd /usr/src/linux
+			# Write sed commands to active options.
+			genkernel --zfs
+			emerge sys-fs/zfs sys-fs/zfs-kmod # ZFS needs to be reinstalled after every kernel compile.
+			zgenhostid
+		}
+		KERNEL_EXIT_HOOK="$KERNEL_EXIT_HOOK KERNEL_ZFS" ;;
 esac
