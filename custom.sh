@@ -1,4 +1,3 @@
-# Customize everything before the 'Ignore' comment.
 # Alias.
 alias cp="cp -v"
 alias mv="mv -v"
@@ -8,24 +7,25 @@ alias emerge="emerge --ask=n"
 BOOTLOADER="systemd-boot" # "efistub" "systemd-boot"
 CORES=4
 EDITOR="vi" 
-EFI_DISK="/dev/nvme0n1"
-EFI_PARTITION="p1"
+EFI_DISK="/dev/vda"
+EFI_PARTITION="1"
 FS="zfs" # "zfs" # Root filesystem, options needed for dependencies and services.
-INIT="systemd" "systemd"
+INIT="systemd" # "systemd"
 MAKE_CONF="EMERGE_DEFAULT_OPTS=\"--ask --keep-going --jobs ${CORES} --load-average ${CORES}.0\"
 FEATURES=\"parallel-fetch parallel-install\"
 MAKEOPTS=\"-j4 -l4\"
 USE=\"systemd threads -gui -sound\" # savedconfig does not currently work for sys-kernel/linux-firmware"
 KERNEL_RAMDISKOPTS="--firmware --compress-initramfs --microcode-initramfs"
-TOOLS="cronie dosfstools dhcpcd gentoolkit"
-SERVICES="zfs.target zfs-import-cache  zfs-mount zfs-import.target zfs-share zfs-zed"
+TOOLS="cronie dosfstools dhcpcd gentoolkit" # Packages installed after kernel compile.
+SERVICES="cronie dhcpcd"
 # Functions.
-KERNEL_INSTALL() { genkernel --makeopts=-j{cores} all }
+KERNEL_INSTALL() {
+	genkernel --no-zfs --makeopts=-j$CORES all
+}
 # Hooks.
 KERNEL_ENTER_HOOK=""
 KERNEL_EXIT_HOOK=""
-}
-# Ignore.
+# Case statement.
 case "$FS" in
 	btrfs) ;;
 	zfs)
@@ -37,11 +37,24 @@ case "$FS" in
 		KERNEL_RAMDISKOPTS="$KERNEL_RAMDISKOPTS --zfs" 
 		KERNEL_ZFS() {
 			emerge sys-fs/zfs sys-fs/zfs-kmod
-			cd /usr/src/linux
 			# Write sed commands to active options.
+			sed -i 's/^.*CONFIG_GCC_PLUGIN_RANDSTRUCT.*$/# CONFIG_GCC_PLUGIN_RANDSTRUCT is not set/' /usr/src/linux/.config
+			sed -i 's/^.*CONFIG_CRYPTO_DEFLATE*$/CONFIG_CRYPTO_DEFLATE=y/' /usr/src/linux/.config
+			sed -i 's/^.*CONFIG_FORTIFY_SOURCE.*$/# CONFIG_FORTIFY_SOURCE is not set/' /usr/src/linux/.config
 			genkernel --zfs
 			emerge sys-fs/zfs sys-fs/zfs-kmod # ZFS needs to be reinstalled after every kernel compile.
 			zgenhostid
 		}
-		KERNEL_EXIT_HOOK="$KERNEL_EXIT_HOOK;KERNEL_ZFS" ;;
+		KERNEL_EXIT_HOOK="$KERNEL_EXIT_HOOK KERNEL_ZFS;" 
+		KERNEL_PARAMS="$KERNEL_PARAMS dozfs=cache zfs=zroot/gentoo rw" ;;
 esac
+case "$INIT" in
+	systemd) KERNEL_SYSTEMD() {
+			sed -i 's/^.*CONFIG_GENTOO_LINUX_INIT_SYSTEMD.*$/CONFIG_GENTOO_LINUX_INIT_SYSTEMD=y/' /usr/src/linux/.config
+		} 
+		KERNEL_ENTER_HOOK="$KERNEL_ENTER_HOOK KERNEL_SYSTEMD;" 
+		INIT_ADD() {
+			systemctl enable $@
+		} ;;
+esac
+			

@@ -1,5 +1,5 @@
 set -e
-source custom.sh
+source ./custom.sh
 echo $LOCALE > /etc/locale.gen
 locale-gen
-env-update && source /etc/profile
+source /etc/profile && env-update

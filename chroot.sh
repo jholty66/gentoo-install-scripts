@@ -1,5 +1,13 @@
 #!/bin/sh
-set -e
-source custom.sh
 # Chroot into install
-sh setup-portage.sh locale.sh fstab.sh kernel.sh services.sh bootloader.sh
+set -e
+cd /root/gentoo-installer/
+source /etc/profile
+/usr/sbin/env-update
+source ./custom.sh
+sh setup-portage.sh
+sh locale.sh
+sh fstab.sh
+sh kernel.sh
+sh services.sh
+sh bootloader.sh
