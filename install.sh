@@ -52,7 +52,7 @@ bootstrap() { # Install and extractstage3 tarball.  Copy over config files.
 	cp /mnt/gentoo/usr/share/portage/config/repos.conf /mnt/gentoo/etc/portage/repos.conf/gentoo.conf
 	cp --dereference /etc/resolv.conf /mnt/gentoo/etc/
 }
-mount-virtual(){  # Mount virtual file systems.
+mount-virtual() {  # Mount virtual file systems.
 	cd /mnt/gentoo
 	mount -t proc none proc
 	mount --rbind /sys sys
@@ -63,7 +63,7 @@ mount-virtual(){  # Mount virtual file systems.
 	mount --types tmpfs --options nosuid,nodev,noexec shm /dev/shm
 	chmod 1777 /dev/shm
 }
-chroot(){
+chroot() {
 	eval $CHROOT_PRE_HOOK
 	'set -e;source /etc/profile&&/usr/sbin/env-update&&/bin/bash' | env -i HOME=/root TERM=$TERM chroot /mnt/gentoo/ /bin/bash -s
 	eval $CHROOT_POST_HOOK # This is evaluated after chrooting, not once entered the chroot environment.
@@ -77,7 +77,7 @@ locale() {
 	locale-gen
 	source /etc/profile && env-update
 }
-fstab(){ 
+fstab() { 
 	emerge app-portage/layman dev-vcs/git
 	layman -L
 	yes | layman -a zscheile
@@ -95,11 +95,11 @@ kernel() {# Install kernel and initramfs.
 	eval $KERNEL_POST_HOOK
 	genkernel initramfs $KERNEL_RAMDISKOPTS
 }
-services(){
+services() {
 	emerge $TOOLS
 	INIT_ADD $SERVICES
 }
-bootloader(){
+bootloader() {
 	IMAGE=$(ls /boot/ | grep vmlinuz.*gentoo.*x86_64$)
 	INITRAMFS=$(ls /boot/ | grep initramfs.*gentoo.*x86_64.img$)
 	case "$BOOTLOADER" in
@@ -115,9 +115,27 @@ options	$KERNEL_PARAMS" > /boot/loader/entries/gentoo.conf
 			cat /boot/loader/entries/gentoo.conf;;
 	esac
 }
-all(){
+all() {
 	bootstrap&&mount-virtual
 	eval $CHROOT_PRE_HOOK
 	echo 'locale&&kernel&&services&&bootloader' | env -i HOME=/root TERM=$TERM chroot /mnt/gentoo/ /bin/bash -s
 	eval $CHROOT_POST_HOOK
 }
+while true; do
+	case "$1" in
+		--help) cat README;break;;
+		--bootstrap) bootstrap();shift;;
+		--mount) mount-virtual();shift;;
+		--chroot) chroot();shift;;
+		--setup) setup-portage();shift;;
+		--locale) locale();shift;;
+		--fstab) fstab();shift;;
+		--kernel) kernel();shift;;
+		--services) services();shift;;
+		--bootloader) bootloader();shift;;
+		--all) all();break;;
+		--) shift;break;
+		*) break;;
+	esac
+	shift
+done
