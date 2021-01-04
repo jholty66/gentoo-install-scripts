@@ -1,0 +1,13 @@
+Personal Gentoo install scripts.
+
+Minimal install of Gentoo linux for EFI firmware, SystemD init, ZFS filesystem
+and either Systemd boot or efistub bootloader. Kernel can be compiled with
+either Genkernel or manually.
+
+Customizations made in 'custom.sh' and '.conf' files, feel free to edit
+install.sh.
+
+Read all files before using.
+
+% cat * | wc -l
+219
