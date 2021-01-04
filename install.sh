@@ -52,7 +52,7 @@ bootstrap() { # Install and extractstage3 tarball.  Copy over config files.
 	cp /mnt/gentoo/usr/share/portage/config/repos.conf /mnt/gentoo/etc/portage/repos.conf/gentoo.conf
 	cp --dereference /etc/resolv.conf /mnt/gentoo/etc/
 }
-mount-virtual() {  # Mount virtual file systems.
+mount_virtual() {  # Mount virtual file systems.
 	cd /mnt/gentoo
 	mount -t proc none proc
 	mount --rbind /sys sys
@@ -68,7 +68,7 @@ chroot() {
 	'set -e;source /etc/profile&&/usr/sbin/env-update&&/bin/bash' | env -i HOME=/root TERM=$TERM chroot /mnt/gentoo/ /bin/bash -s
 	eval $CHROOT_POST_HOOK # This is evaluated after chrooting, not once entered the chroot environment.
 }
-setup-portage() {
+setup_portage() {
 	emerge-webrsync
 	emerge --update --deep --newuse @world
 }
@@ -87,7 +87,7 @@ fstab() {
 	genfstab -U -p / > /etc/fstab
 	cat /etc/fstab
 }
-kernel() {# Install kernel and initramfs.
+kernel() { # Install kernel and initramfs.
 	emerge sys-kernel/gentoo-sources sys-kernel/genkernel linux-firmware
 	cd /usr/src/linux
 	eval $KERNEL_PRE_HOOK
@@ -122,20 +122,21 @@ all() {
 	eval $CHROOT_POST_HOOK
 }
 while true; do
+	echo "$1"
 	case "$1" in
-		--help) cat README;break;;
-		--bootstrap) bootstrap();shift;;
-		--mount) mount-virtual();shift;;
-		--chroot) chroot();shift;;
-		--setup) setup-portage();shift;;
-		--locale) locale();shift;;
-		--fstab) fstab();shift;;
-		--kernel) kernel();shift;;
-		--services) services();shift;;
-		--bootloader) bootloader();shift;;
-		--all) all();break;;
-		--) shift;break;
-		*) break;;
+		--help ) cat README ; break ;;
+		--bootstrap ) bootstrap ; shift ;;
+		--mount ) mount_virtual ; shift ;;
+		--chroot ) chroot ; shift ;;
+		--setup ) setup_portage ; shift ;;
+		--locale ) locale ; shift ;;
+		--fstab ) fstab ; shift ;;
+		--kernel ) kernel ; shift ;;
+		--services ) services ; shift ;;
+		--bootloader ) bootloader ; shift ;;
+		--all ) all ; break ;;
+		--) shift;break;;
+		* ) break ;;
 	esac
 	shift
 done
