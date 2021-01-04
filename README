@@ -8,6 +8,3 @@ Customizations made in 'custom.sh' and '.conf' files, feel free to edit
 install.sh.
 
 Read all files before using.
-
-% cat * | wc -l
-219
