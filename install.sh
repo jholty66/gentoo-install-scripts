@@ -23,14 +23,14 @@ case "$FS" in
 			zgenhostid
 		}
 		KERNEL_POST_HOOK="$KERNEL_POST_HOOK KERNEL_ZFS;"
-		KERNEL_PARAMS="$KERNEL_PARAMS dozfs=cache zfs=zroot/gentoo rw"
+		KERNEL_PARAMS="$KERNEL_PARAMS dozfs=cache zfs=$FS_ROOT rw"
 		ZFS_CACHE() {
 			[ -d /mnt/gentoo/etc/zfs/ ] || mkdir /mnt/gentoo/etc/zfs/;cp /etc/zfs/zpool.cache /mnt/gentoo/etc/zfs
 		}
 		CHROOT_PRE_HOOK="$CHROOT_PRE_HOOK ";;
 esac
 case "$INIT" in
-	systemd) source ./make.conf;USE="$USE gnuefi";sed -i "s/^USE.*$/USE=\"$USE\"/" make.conf "
+	systemd) source ./make.conf;USE="$USE gnuefi";sed -i "s/^USE.*$/USE=\"$USE\"/" make.conf 
 		KERNEL_SYSTEMD() {
 			sed -i 's/^.*CONFIG_GENTOO_LINUX_INIT_SYSTEMD.*$/CONFIG_GENTOO_LINUX_INIT_SYSTEMD=y/' /usr/src/linux/.config
 			grep "^.*CONFIG_GENTOO_LINUX_INIT_SYSTEMD.*$" /usr/src/linux/.config
@@ -65,8 +65,8 @@ mount-virtual(){  # Mount virtual file systems.
 }
 chroot(){
 	eval $CHROOT_PRE_HOOK
-	env -i HOME=/root TERM=$TERM chroot /mnt/gentoo/ /root/gentoo-installer/chroot.sh
-	eval $CHROOT_POST_HOOK
+	'set -e;source /etc/profile&&/usr/sbin/env-update&&/bin/bash' | env -i HOME=/root TERM=$TERM chroot /mnt/gentoo/ /bin/bash -s
+	eval $CHROOT_POST_HOOK # This is evaluated after chrooting, not once entered the chroot environment.
 }
 setup-portage() {
 	emerge-webrsync
@@ -116,5 +116,8 @@ options	$KERNEL_PARAMS" > /boot/loader/entries/gentoo.conf
 	esac
 }
 all(){
-	bootstrap&&mount-virtual&&chroot&&locale&&kernel&&services&&bootloader
+	bootstrap&&mount-virtual
+	eval $CHROOT_PRE_HOOK
+	echo 'locale&&kernel&&services&&bootloader' | env -i HOME=/root TERM=$TERM chroot /mnt/gentoo/ /bin/bash -s
+	eval $CHROOT_POST_HOOK
 }
