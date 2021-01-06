@@ -65,7 +65,7 @@ mount_virtual() {  # Mount virtual file systems.
 }
 chroot() {
 	eval $CHROOT_PRE_HOOK
-	'set -e;source /etc/profile&&/usr/sbin/env-update&&/bin/bash' | env -i HOME=/root TERM=$TERM chroot /mnt/gentoo/ /bin/bash -s
+	echo 'set -e;source /etc/profile&&/usr/sbin/env-update&&/bin/bash' | env -i HOME=/root TERM=$TERM chroot /mnt/gentoo/ /bin/bash -s
 	eval $CHROOT_POST_HOOK # This is evaluated after chrooting, not once entered the chroot environment.
 }
 setup_portage() {
@@ -116,7 +116,7 @@ options	$KERNEL_PARAMS" > /boot/loader/entries/gentoo.conf
 	esac
 }
 all() {
-	bootstrap&&mount-virtual
+	bootstrap&&mount_virtual
 	eval $CHROOT_PRE_HOOK
 	echo 'locale&&kernel&&services&&bootloader' | env -i HOME=/root TERM=$TERM chroot /mnt/gentoo/ /bin/bash -s
 	eval $CHROOT_POST_HOOK
