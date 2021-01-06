@@ -42,8 +42,8 @@ case "$INIT" in
 		} ;;
 esac
 bootstrap() { # Install and extractstage3 tarball.  Copy over config files.	
-	# latest_stage3=$(curl http://distfiles.gentoo.org/releases/amd64/autobuilds/latest-stage3.txt 2>/dev/null | grep -o ^.*stage3-amd64-systemd.*\.tar\.xz)
-	ls | grep -o ^.*stage3-amd64-systemd.*\.tar\.xz || (wget https://bouncer.gentoo.org/fetch/root/all/releases/amd64/autobuilds/20210103T214503Z/stage3-amd64-systemd-20210103T214503Z.tar.xz && time tar xpvf stage3-*.tar.xz --xattrs-include='*.*' --numeric-owner -C /mnt/gentoo)
+	latest_stage3=$(curl http://distfiles.gentoo.org/releases/amd64/autobuilds/latest-stage3.txt 2>/dev/null | grep -o ^.*stage3-amd64-systemd.*\.tar\.xz)
+	ls | grep -o ^.*stage3-amd64-systemd.*\.tar\.xz || (wget http://distfiles.gentoo.org/releases/amd64/autobuilds/$latest_stage3 && time tar xpvf stage3-*.tar.xz --xattrs-include='*.*' --numeric-owner -C /mnt/gentoo)
 	[ -d "/mnt/gentoo/etc/portage/package.use/" ] && rm -rf /mnt/gentoo/etc/portage/package.use/
 	cp package.use /mnt/gentoo/etc/portage/
 	[ -f "/etc/portage/make.conf" ] && cp /etc/portage/make.conf /mnt/gentoo/etc/portage/make.conf.def
@@ -66,7 +66,7 @@ mount_virtual() {  # Mount virtual file systems.
 }
 chroot() {
 	eval $CHROOT_PRE_HOOK
-	echo 'set -e;source /etc/profile&&/usr/sbin/env-update&&/bin/bash' | env -i HOME=/root TERM=$TERM chroot /mnt/gentoo/ /bin/bash -s
+	echo 'source /etc/profile&&/usr/sbin/env-update;/bin/bash' | env -i HOME=/root TERM=$TERM chroot /mnt/gentoo/ /bin/bash
 	eval $CHROOT_POST_HOOK # This is evaluated after chrooting, not once entered the chroot environment.
 }
 setup_portage() {
