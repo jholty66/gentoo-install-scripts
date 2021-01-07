@@ -30,10 +30,11 @@ case "$FS" in
 		CHROOT_PRE_HOOK="$CHROOT_PRE_HOOK ";;
 esac
 case "$INIT" in
-	systemd) source ./make.conf;USE="$USE gnuefi";sed -i "s/^USE.*$/USE=\"$USE\"/" make.conf 
+	systemd) grep '^USE=".*gnuefi' make.conf || source ./make.conf;USE="$USE gnuefi";sed -i "s/^USE.*$/USE=\"$USE\"/" make.conf 
+		cat make.conf >> /mnt/gentoo/etc/portage/make.confg;cat /mnt/gentoo/etc/portage/make.conf
 		KERNEL_SYSTEMD() {
 			sed -i 's/^.*CONFIG_GENTOO_LINUX_INIT_SYSTEMD.*$/CONFIG_GENTOO_LINUX_INIT_SYSTEMD=y/' /usr/src/linux/.config
-			grep "^.*CONFIG_GENTOO_LINUX_INIT_SYSTEMD.*$" /usr/src/linux/.config
+			grep "CONFIG_GENTOO_LINUX_INIT_SYSTEMD" /usr/src/linux/.config
 		} 
 		KERNEL_PRE_HOOK="$KERNEL_PRE_HOOK KERNEL_SYSTEMD;"
 		INIT_ADD() {
