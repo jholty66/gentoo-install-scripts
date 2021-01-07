@@ -13,6 +13,7 @@ INIT="systemd" # "systemd"
 KERNEL_RAMDISKOPTS="--firmware --compress-initramfs --microcode-initramfs"
 LOCALE="en_GB" # UTF-8 only.
 TOOLS="cronie dosfstools dhcpcd gentoolkit" # Packages installed after kernel compile.
+SECURE_PASSWD="t" # "t" "nil"
 SERVICES="cronie dhcpcd"
 # Functions.
 KERNEL_INSTALL() {

@@ -4,6 +4,7 @@ source ./custom.sh
 case "$FS" in
 	btrfs) ;;
 	zfs)
+		[ -d /mnt/gentoo/etc/zfs ] && mkdir --parents /mnt/gentoo/etc/zfs/; cp /etc/zfs/zpool.cache /mnt/gentoo/etc/zfs/zpool.cache
 		SERVICES="$SERVICES zfs-mount zfs-share zfs-zed"
 		case "$INIT" in
 			openrc) SERVICES="zfs-import $SERVICES" ;;
@@ -22,7 +23,7 @@ case "$FS" in
 			zgenhostid
 		}
 		KERNEL_POST_HOOK="$KERNEL_POST_HOOK KERNEL_ZFS;"
-		KERNEL_PARAMS="$KERNEL_PARAMS dozfs=cache zfs=$FS_ROOT rw"
+		KERNEL_PARAMS="$KERNEL_PARAMS dozfs=cache zfs=ZFS=$FS_ROOT rw"
 		ZFS_CACHE() {
 			[ -d /mnt/gentoo/etc/zfs/ ] || mkdir /mnt/gentoo/etc/zfs/;cp /etc/zfs/zpool.cache /mnt/gentoo/etc/zfs
 		}
@@ -30,8 +31,7 @@ case "$FS" in
 esac
 case "$INIT" in
 	openrc);;
-	systemd) grep '^USE=".*gnuefi' make.conf || source ./make.conf;USE="$USE gnuefi";sed -i "s/^USE.*$/USE=\"$USE\"/" make.conf 
-		cat make.conf >> /mnt/gentoo/etc/portage/make.confg;cat /mnt/gentoo/etc/portage/make.conf
+	systemd) grep '^USE=".*gnuefi' make.conf || (source ./make.conf;USE="$USE gnuefi";echo "$USE";sed -i "s/^USE.*$/USE=\"$USE\"/" make.conf)
 		KERNEL_SYSTEMD() {
 			sed -i 's/^.*CONFIG_GENTOO_LINUX_INIT_SYSTEMD.*$/CONFIG_GENTOO_LINUX_INIT_SYSTEMD=y/' /usr/src/linux/.config
 			grep "CONFIG_GENTOO_LINUX_INIT_SYSTEMD" /usr/src/linux/.config
@@ -47,7 +47,7 @@ bootstrap() { # Install and extractstage3 tarball.  Copy over config files.
 	[ -d "/mnt/gentoo/etc/portage/package.use/" ] && rm -rf /mnt/gentoo/etc/portage/package.use/
 	cp package.use /mnt/gentoo/etc/portage/
 	[ -f "/etc/portage/make.conf" ] && cp /etc/portage/make.conf /mnt/gentoo/etc/portage/make.conf.def
-	echo "${MAKE_CONF}" >> /mnt/gentoo/etc/portage/make.conf
+	grep '^USE="' /mnt/gentoo/etc/portage/make.conf || (mv /mnt/gentoo/etc/portage/make.conf{,.bak};cat ./make.conf >> /mnt/gentoo/etc/portage/make.conf;cat /mnt/gentoo/etc/portage/make.conf)
 	cp {package.accept_keywords,package.license} /mnt/gentoo/etc/portage/
 	mkdir --parents /mnt/gentoo/etc/portage/repos.conf
 	cp /mnt/gentoo/usr/share/portage/config/repos.conf /mnt/gentoo/etc/portage/repos.conf/gentoo.conf
@@ -89,7 +89,7 @@ kernel() { # Install kernel and initramfs.
 	eval $KERNEL_PRE_HOOK
 	KERNEL_INSTALL --no-zfs
 	eval $KERNEL_POST_HOOK
-	genkernel initramfs $KERNEL_RAMDISKOPTS
+	genkernel initramfs --makeopts=-j$CORES $KERNEL_RAMDISKOPTS
 }
 services() {
 	emerge $TOOLS
@@ -109,6 +109,10 @@ linux	/$IMAGE
 initrd	/$INITRAMFS
 options	$KERNEL_PARAMS" > /boot/loader/entries/gentoo.conf;cat /boot/loader/entries/gentoo.conf;;
 	esac
+}
+password() {
+	[ -eq "nil" "$SECURE_PASSWD" ] && sed 's/enforce=everyone/enforce=none/' /etc/security/passwdqc.conf;cat /etc/security/passwdqc.conf
+	passwd
 }
 all() {
 	bootstrap&&mount_virtual
