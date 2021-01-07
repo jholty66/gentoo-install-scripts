@@ -113,7 +113,7 @@ options	$KERNEL_PARAMS" > /boot/loader/entries/gentoo.conf;cat /boot/loader/entr
 all() {
 	bootstrap&&mount_virtual
 	eval $CHROOT_PRE_HOOK
-	echo 'locale&&kernel&&services&&bootloader' | env -i HOME=/root TERM=$TERM chroot /mnt/gentoo/ /bin/bash -s
+	echo 'source /etc/profile&&/usr/sbin/env-update;cd /root/gentoo-install-scripts/&&source ./install;setup_portage&&locale&&fstab&&kernel&&services&&bootloader' | env -i HOME=/root TERM=$TERM chroot /mnt/gentoo/ /bin/bash -s
 	eval $CHROOT_POST_HOOK
 }
 while true; do
