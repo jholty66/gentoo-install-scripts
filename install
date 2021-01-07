@@ -1,5 +1,5 @@
 #!/bin/sh
-set -e
+set -x
 source ./custom.sh
 case "$FS" in
 	btrfs) ;;
@@ -12,7 +12,6 @@ case "$FS" in
 		KERNEL_RAMDISKOPTS="$KERNEL_RAMDISKOPTS --zfs" 
 		KERNEL_ZFS() {
 			emerge sys-fs/zfs sys-fs/zfs-kmod
-			# Write sed commands to active options.
 			sed -i 's/^.*CONFIG_GCC_PLUGIN_RANDSTRUCT.*$/# CONFIG_GCC_PLUGIN_RANDSTRUCT is not set/' /usr/src/linux/.config
 			grep "^.*CONFIG_GCC_PLUGIN_RANDSTRUCT.*$" /usr/src/linux/.config
 			sed -i 's/^.*CONFIG_CRYPTO_DEFLATE*$/CONFIG_CRYPTO_DEFLATE=y/' /usr/src/linux/.config
@@ -30,6 +29,7 @@ case "$FS" in
 		CHROOT_PRE_HOOK="$CHROOT_PRE_HOOK ";;
 esac
 case "$INIT" in
+	openrc);;
 	systemd) grep '^USE=".*gnuefi' make.conf || source ./make.conf;USE="$USE gnuefi";sed -i "s/^USE.*$/USE=\"$USE\"/" make.conf 
 		cat make.conf >> /mnt/gentoo/etc/portage/make.confg;cat /mnt/gentoo/etc/portage/make.conf
 		KERNEL_SYSTEMD() {
@@ -39,7 +39,7 @@ case "$INIT" in
 		KERNEL_PRE_HOOK="$KERNEL_PRE_HOOK KERNEL_SYSTEMD;"
 		INIT_ADD() {
 			systemctl enable $@
-		} ;;
+		};;
 esac
 bootstrap() { # Install and extractstage3 tarball.  Copy over config files.	
 	latest_stage3=$(curl http://distfiles.gentoo.org/releases/amd64/autobuilds/latest-stage3.txt 2>/dev/null | grep -o ^.*stage3-amd64-systemd.*\.tar\.xz)
@@ -63,11 +63,6 @@ mount_virtual() {  # Mount virtual file systems.
 	test -L /dev/shm && rm /dev/shm && mkdir /dev/shm
 	mount --types tmpfs --options nosuid,nodev,noexec shm /dev/shm
 	chmod 1777 /dev/shm
-}
-chroot() {
-	eval $CHROOT_PRE_HOOK
-	echo 'source /etc/profile&&/usr/sbin/env-update;/bin/bash' | env -i HOME=/root TERM=$TERM chroot /mnt/gentoo/ /bin/bash
-	eval $CHROOT_POST_HOOK # This is evaluated after chrooting, not once entered the chroot environment.
 }
 setup_portage() {
 	emerge-webrsync
@@ -113,8 +108,7 @@ bootloader() {
 			echo "title	Gentoo Linux
 linux	/$IMAGE
 initrd	/$INITRAMFS
-options	$KERNEL_PARAMS" > /boot/loader/entries/gentoo.conf
-			cat /boot/loader/entries/gentoo.conf;;
+options	$KERNEL_PARAMS" > /boot/loader/entries/gentoo.conf;cat /boot/loader/entries/gentoo.conf;;
 	esac
 }
 all() {
@@ -124,13 +118,10 @@ all() {
 	eval $CHROOT_POST_HOOK
 }
 while true; do
-	echo "$1"
 	case "$1" in
-		--help ) cat README ; break ;;
 		--bootstrap ) bootstrap ; shift ;;
-		--mount ) mount_virtual ; shift ;;
-		--chroot ) chroot ; shift ;;
-		--setup ) setup_portage ; shift ;;
+		--mount_virtual ) mount_virtual ; shift ;;
+		--setup_portage ) setup_portage ; shift ;;
 		--locale ) locale ; shift ;;
 		--fstab ) fstab ; shift ;;
 		--kernel ) kernel ; shift ;;
