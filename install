@@ -81,8 +81,7 @@ fstab() {
 	emerge asciidoc
 	emerge --nodeps arch-install-scripts
 	cp /etc/fstab{,.bak}&&cp /etc/fstab{./def}
-	genfstab -U -p / > /etc/fstab
-	cat /etc/fstab
+	genfstab -U -p / > /etc/fstab;cat /etc/fstab&&echo 'fstab was not created'
 }
 kernel() { # Install kernel and initramfs.
 	emerge sys-kernel/gentoo-sources sys-kernel/genkernel linux-firmware
