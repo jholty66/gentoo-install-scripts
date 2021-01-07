@@ -118,6 +118,17 @@ all() {
 }
 while true; do
 	case "$1" in
+		--help ) echo 'Available optinos are (when using multiple optinos, use in following order):
+--bootstrap	# Install tarball, setup initial root config files.
+--mount_virtual # Mount virtual filesystems.
+--setup_portage # Sync portage and update packages / install dependencies.
+--locale
+--fstab
+--kernel
+--services	# Install services and their package dependencies.
+--bootloader
+--all		# Ececute all previous options in order of appearence.'
+; break ;;
 		--bootstrap ) bootstrap ; shift ;;
 		--mount_virtual ) mount_virtual ; shift ;;
 		--setup_portage ) setup_portage ; shift ;;
