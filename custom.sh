@@ -7,9 +7,6 @@ alias grep="grep --color=auto"
 # Shell variable.
 BOOTLOADER="systemd-boot" # "efistub" "systemd-boot"
 CORES=4
-EDITOR="vi" 
-EFI_DISK="/dev/vda"
-EFI_PARTITION="1"
 FS="zfs" # "zfs" # Root filesystem, options needed for dependencies and services.
 FS_ROOT="zroot/gentoo"
 INIT="systemd" # "systemd"
