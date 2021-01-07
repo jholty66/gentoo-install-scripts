@@ -74,8 +74,9 @@ setup_portage() {
 	emerge --update --deep --newuse @world
 }
 locale() {
-	echo $LOCALE > /etc/locale.gen
+	echo "$LOCALE.UTF-8 UTF-8" > /etc/locale.gen;cat /etc/locale.gen
 	locale-gen
+	echo -e "LANG=\"$LOCALE.UTF-8\"\nLC_COLLATE=\"C\"" > /etc/env.d/02locale;cat/etc/env.d/02locale	
 	source /etc/profile && env-update
 }
 fstab() { 

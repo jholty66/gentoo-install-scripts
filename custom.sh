@@ -11,6 +11,7 @@ FS="zfs" # "zfs" # Root filesystem, options needed for dependencies and services
 FS_ROOT="zroot/gentoo"
 INIT="systemd" # "systemd"
 KERNEL_RAMDISKOPTS="--firmware --compress-initramfs --microcode-initramfs"
+LOCALE="en_GB" # UTF-8 only.
 TOOLS="cronie dosfstools dhcpcd gentoolkit" # Packages installed after kernel compile.
 SERVICES="cronie dhcpcd"
 # Functions.
