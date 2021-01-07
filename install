@@ -127,8 +127,7 @@ while true; do
 --kernel
 --services	# Install services and their package dependencies.
 --bootloader
---all		# Ececute all previous options in order of appearence.'
-; break ;;
+--all		# Ececute all previous options in order of appearence.'; break ;;
 		--bootstrap ) bootstrap ; shift ;;
 		--mount_virtual ) mount_virtual ; shift ;;
 		--setup_portage ) setup_portage ; shift ;;
