@@ -16,7 +16,7 @@ TOOLS="cronie dosfstools dhcpcd gentoolkit" # Packages installed after kernel co
 SERVICES="cronie dhcpcd"
 # Functions.
 KERNEL_INSTALL() {
-	genkernel --no-zfs --makeopts=-j$CORES all
+	genkernel $@ --makeopts=-j$CORES all
 }
 # Hooks.
 CHROOT_PRE_HOOK=""

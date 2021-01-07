@@ -19,8 +19,7 @@ case "$FS" in
 			grep "^.*CONFIG_CRYPTO_DEFLATE*$" /usr/src/linux/.config
 			sed -i 's/^.*CONFIG_FORTIFY_SOURCE.*$/# CONFIG_FORTIFY_SOURCE is not set/' /usr/src/linux/.config
 			grep "^.*CONFIG_FORTIFY_SOURCE.*$" /usr/src/linux/.config
-			genkernel --zfs
-			emerge sys-fs/zfs sys-fs/zfs-kmod # ZFS needs to be reinstalled after every kernel compile.
+			KERNEL_INSTALL --zfs&&emerge sys-fs/zfs sys-fs/zfs-kmod # ZFS needs to be reinstalled after every kernel compile.
 			zgenhostid
 		}
 		KERNEL_POST_HOOK="$KERNEL_POST_HOOK KERNEL_ZFS;"
@@ -91,9 +90,9 @@ fstab() {
 }
 kernel() { # Install kernel and initramfs.
 	emerge sys-kernel/gentoo-sources sys-kernel/genkernel linux-firmware
-	cd /usr/src/linux
+	cd /usr/src/linux;make defconfig
 	eval $KERNEL_PRE_HOOK
-	KERNEL_INSTALL
+	KERNEL_INSTALL --no-zfs
 	eval $KERNEL_POST_HOOK
 	genkernel initramfs $KERNEL_RAMDISKOPTS
 }
