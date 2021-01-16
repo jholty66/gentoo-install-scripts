@@ -46,6 +46,7 @@ bootstrap() { # Install and extractstage3 tarball.  Copy over config files.
 	latest_stage3=$(curl http://distfiles.gentoo.org/releases/amd64/autobuilds/latest-stage3.txt 2>/dev/null | grep -o ^.*stage3-amd64-systemd.*\.tar\.xz)
 	ls | grep -o ^.*stage3-amd64-systemd.*\.tar\.xz || (wget http://distfiles.gentoo.org/releases/amd64/autobuilds/$latest_stage3 && time tar xpvf stage3-*.tar.xz --xattrs-include='*.*' --numeric-owner -C /mnt/gentoo > tar_log.txt&&echo 'tar output saved in "tar_log.txt"')
 	[ -d "/mnt/gentoo/etc/portage/package.use/" ] && rm -rf /mnt/gentoo/etc/portage/package.use/
+	[ -d "/mnt/gentoo/etc/portage/package.mask/" ] && rm -rf /mnt/gentoo/etc/portage/package.mask/
 	cp package.use /mnt/gentoo/etc/portage/
 	[ -f "/etc/portage/make.conf" ] && cp /etc/portage/make.conf /mnt/gentoo/etc/portage/make.conf.def
 	grep '^USE="' /mnt/gentoo/etc/portage/make.conf || (mv /mnt/gentoo/etc/portage/make.conf{,.bak};cat ./make.conf >> /mnt/gentoo/etc/portage/make.conf;cat /mnt/gentoo/etc/portage/make.conf)
@@ -66,8 +67,11 @@ mount_virtual() {  # Mount virtual file systems.
 	chmod 1777 /dev/shm
 }
 setup_portage() {
+	grep 'CHOST=' /etc/portage/make.conf || (sed -i '/COMMON_FLAGS=\"/i CHOST="x86_64-pc-linux-gnu"' /etc/portage/make.conf;grep 'CHOST=' /etc/portage/make.conf 
+	grep '-march=' /etc/portage/make.conf || (sed -i "s/\(COMMON_FLAGS=\"\)/\1-march=${MARCH} /" /etc/portage/make.conf;grep 'COMMON_FLAGS='/etc/portage/make.conf)
 	emerge-webrsync
-	emerge --update --deep --newuse @world
+	emerge --update --deep --newuse @world cpuid2cpuflags
+	grep 'CPU_FLAGS_X86=' /etc/portage/make.con || (fsed -i "/COMMON_FLAGS=/a $(cpuid2cpuflags)" /etc/portage/make.conf; grep 'CPU_FLAGS_X86=' /etc/portage/make.conf)
 }
 locale() {
 	[ "$HOSTNAME" == "" ] || ls /etc/conf.d/hostname || echo "$HOSTNAME" > /etc/conf.d/hostname;cat /etc/conf.d/hostname
