@@ -1,6 +1,7 @@
 #!/bin/sh
 set -x
 source ./custom.sh
+[ "" == "$KEYMAP" ] || loadkeys $KEYMAP
 case "$FS" in
 	btrfs) ;;
 	zfs)
@@ -69,6 +70,8 @@ setup_portage() {
 	emerge --update --deep --newuse @world
 }
 locale() {
+	[ "$HOSTNAME" == "" ] || ls /etc/conf.d/hostname || echo "$HOSTNAME" > /etc/conf.d/hostname;cat /etc/conf.d/hostname
+	echo "$KEYMAP" > /etc/confd.keymaps;cat /etc/conf.d/keymaps
 	echo "$LOCALE.UTF-8 UTF-8" > /etc/locale.gen;cat /etc/locale.gen
 	locale-gen
 	echo -e "LANG=\"$LOCALE.UTF-8\"\nLC_COLLATE=\"C\"" > /etc/env.d/02locale;cat/etc/env.d/02locale	
