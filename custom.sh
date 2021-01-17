@@ -15,6 +15,7 @@ KERNEL_RAMDISKOPTS="--firmware --compress-initramfs --microcode-initramfs"
 KEYMAP="uk" # Console keyboard layout.
 LOCALE="en_GB" # UTF-8 only.
 MARCH="native" # Leave blank to not include option.
+PORTAGE_TMPFS="13G" # Size of RAM, blank to disable. https://wiki.gentoo.org/wiki/Portage_TMPDIR_on_tmpfs#:~:text=When%20emerging%20packages%20it%20is,and%20reduces%20HDD%2FSSD%20wear.
 TOOLS="cronie dosfstools dhcpcd gentoolkit" # Packages installed after kernel compile.
 SECURE_PASSWD="t" # "t" "nil"
 SERVICES="cronie dhcpcd"

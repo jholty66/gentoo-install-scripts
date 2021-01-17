@@ -88,7 +88,9 @@ fstab() {
 	emerge asciidoc
 	emerge --nodeps arch-install-scripts
 	cp /etc/fstab{,.bak}&&cp /etc/fstab{./def}
-	genfstab -U -p / > /etc/fstab;cat /etc/fstab&&echo 'fstab was not created'
+	genfstab -U -p / > /etc/fstab
+	[ $"PORTAGE_TMPFS" ] && echo "tmpfs		/var/tmp/portage		tmpfs	size=${PORTAGE_TMPFS},uid=portage,gid=portage,mode=775,noatime" >> /etc/fstab
+	cat /etc/fstab
 }
 kernel() { # Install kernel and initramfs.
 	emerge sys-kernel/gentoo-sources sys-kernel/genkernel linux-firmware
