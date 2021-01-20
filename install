@@ -42,7 +42,7 @@ case "$INIT" in
 			systemctl enable $@
 		};;
 esac
-bootstrap() { # Install and extractstage3 tarball.  Copy over config files.	
+bootstrap() { # Install and extractstage3 tarball.  Copy over config files.
 	latest_stage3=$(curl http://distfiles.gentoo.org/releases/amd64/autobuilds/latest-stage3.txt 2>/dev/null | grep -o ^.*stage3-amd64-systemd.*\.tar\.xz)
 	ls | grep -o ^.*stage3-amd64-systemd.*\.tar\.xz || (wget http://distfiles.gentoo.org/releases/amd64/autobuilds/$latest_stage3 && time tar xpvf stage3-*.tar.xz --xattrs-include='*.*' --numeric-owner -C /mnt/gentoo > tar_log.txt&&echo 'tar output saved in "tar_log.txt"')
 	[ -d "/mnt/gentoo/etc/portage/package.use/" ] && rm -rf /mnt/gentoo/etc/portage/package.use/
@@ -78,10 +78,10 @@ locale() {
 	echo "$KEYMAP" > /etc/confd.keymaps;cat /etc/conf.d/keymaps
 	echo "$LOCALE.UTF-8 UTF-8" > /etc/locale.gen;cat /etc/locale.gen
 	locale-gen
-	echo -e "LANG=\"$LOCALE.UTF-8\"\nLC_COLLATE=\"C\"" > /etc/env.d/02locale;cat/etc/env.d/02locale	
+	echo -e "LANG=\"$LOCALE.UTF-8\"\nLC_COLLATE=\"C\"" > /etc/env.d/02locale;cat/etc/env.d/02locale
 	source /etc/profile && env-update
 }
-fstab() { 
+fstab() {
 	emerge app-portage/layman dev-vcs/git
 	layman -L
 	yes | layman -a zscheile
