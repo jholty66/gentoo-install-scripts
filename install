@@ -74,7 +74,7 @@ setup_portage() {
 	grep 'CPU_FLAGS_X86=' /etc/portage/make.con || (fsed -i "/COMMON_FLAGS=/a $(cpuid2cpuflags)" /etc/portage/make.conf; grep 'CPU_FLAGS_X86=' /etc/portage/make.conf)
 }
 locale() {
-	[ "$HOSTNAME" == "" ] || ls /etc/conf.d/hostname || echo "hostname=$HOSTNAME" > /etc/conf.d/hostname;cat /etc/conf.d/hostname
+	[ "$HOSTNAME" == "" ] || ls /etc/conf.d/hostname || echo "hostname=\"$HOSTNAME\"" > /etc/conf.d/hostname;cat /etc/conf.d/hostname
 	echo "$KEYMAP" > /etc/confd.keymaps;cat /etc/conf.d/keymaps
 	echo "$LOCALE.UTF-8 UTF-8" > /etc/locale.gen;cat /etc/locale.gen
 	locale-gen
