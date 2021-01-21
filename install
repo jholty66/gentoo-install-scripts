@@ -94,11 +94,17 @@ fstab() {
 }
 kernel() { # Install kernel and initramfs.
 	emerge sys-kernel/gentoo-sources sys-kernel/genkernel linux-firmware
+	KVER=$(ls /lib/modules/ | grep "$(eselect kernel list | sed -n 's/^.*linux-\(.*\)\ \*$/\1/p')" | head -n 1)
 	cd /usr/src/linux;make defconfig
 	eval $KERNEL_PRE_HOOK
 	KERNEL_INSTALL --no-zfs
 	eval $KERNEL_POST_HOOK
-	genkernel initramfs --makeopts=-j$CORES $KERNEL_RAMDISKOPTS
+	if [ "$KERNEL_INITRAMFS" == "dracut" ]; then
+		emerge dracut
+		dracut --hostonly --fstab /etc/fstab --kver $KVER
+	else
+		genkernel initramfs --makeopts=-j$CORES
+	fi
 }
 services() {
 	emerge $TOOLS
@@ -141,16 +147,15 @@ while true; do
 --services	# Install services and their package dependencies.
 --bootloader
 --all		# Ececute all previous options in order of appearence.'; break ;;
-		--bootstrap ) bootstrap ; shift ;;
-		--mount_virtual ) mount_virtual ; shift ;;
-		--setup_portage ) setup_portage ; shift ;;
-		--locale ) locale ; shift ;;
-		--fstab ) fstab ; shift ;;
-		--kernel ) kernel ; shift ;;
-		--services ) services ; shift ;;
-		--bootloader ) bootloader ; shift ;;
-		--all ) all ; break ;;
-		--) shift;break;;
+		--bootstrap ) bootstrap;;
+		--mount_virtual ) mount_virtual;;
+		--setup_portage ) setup_portage;;
+		--locale ) locale;;
+		--fstab ) fstab;;
+		--kernel ) kernel;;
+		--services ) services;;
+		--bootloader ) bootloader;;
+		--all ) all ;;
 		* ) break ;;
 	esac
 	shift
