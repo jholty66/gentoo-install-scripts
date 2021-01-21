@@ -1,5 +1,4 @@
 #!/bin/sh
-set -x
 source ./custom.sh
 [ "" == "$KEYMAP" ] || loadkeys $KEYMAP
 case "$FS" in
@@ -67,11 +66,11 @@ mount_virtual() {  # Mount virtual file systems.
 	chmod 1777 /dev/shm
 }
 setup_portage() {
-	grep 'CHOST=' /etc/portage/make.conf || (sed -i '/COMMON_FLAGS=\"/i CHOST="x86_64-pc-linux-gnu"' /etc/portage/make.conf;grep 'CHOST=' /etc/portage/make.conf 
-	grep '-march=' /etc/portage/make.conf || (sed -i "s/\(COMMON_FLAGS=\"\)/\1-march=${MARCH} /" /etc/portage/make.conf;grep 'COMMON_FLAGS='/etc/portage/make.conf)
+	grep 'CHOST=' /etc/portage/make.conf || { sed -i '/COMMON_FLAGS=\"/i CHOST="x86_64-pc-linux-gnu"' /etc/portage/make.conf;grep 'CHOST=' /etc/portage/make.conf; }
+	grep '-march=' /etc/portage/make.conf || { sed -i "s/\(COMMON_FLAGS=\"\)/\1-march=${MARCH} /" /etc/portage/make.conf;grep 'COMMON_FLAGS='/etc/portage/make.conf; }
 	emerge-webrsync
 	emerge --update --deep --newuse @world cpuid2cpuflags
-	grep 'CPU_FLAGS_X86=' /etc/portage/make.con || (fsed -i "/COMMON_FLAGS=/a $(cpuid2cpuflags)" /etc/portage/make.conf; grep 'CPU_FLAGS_X86=' /etc/portage/make.conf)
+	grep 'CPU_FLAGS_X86=' /etc/portage/make.con || { sed -i "/COMMON_FLAGS=/a $(cpuid2cpuflags)" /etc/portage/make.conf; grep 'CPU_FLAGS_X86=' /etc/portage/make.conf; }
 }
 locale() {
 	[ "$HOSTNAME" == "" ] || ls /etc/conf.d/hostname || echo "hostname=\"$HOSTNAME\"" > /etc/conf.d/hostname;cat /etc/conf.d/hostname
