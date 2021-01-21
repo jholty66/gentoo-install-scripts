@@ -19,10 +19,6 @@ PORTAGE_TMPFS="13G" # Size of RAM, blank to disable. https://wiki.gentoo.org/wik
 TOOLS="cronie dosfstools dhcpcd gentoolkit" # Packages installed after kernel compile.
 SECURE_PASSWD="t" # "t" "nil"
 SERVICES="cronie dhcpcd"
-# Functions.
-KERNEL_INSTALL() {
-	genkernel $@ --makeopts=-j$CORES all
-}
 # Hooks.
 CHROOT_PRE_HOOK=""
 CHROOT_POST_HOOK=""
