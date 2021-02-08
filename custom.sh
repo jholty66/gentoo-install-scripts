@@ -8,6 +8,7 @@ GENKERNEL="genkernel --makeopts=-j$CORES all" # genkernel install command, used 
 HOSTNAME="gentoo-pc" # Hostname, ignored if left blank.
 INIT="systemd" # "systemd"
 INITRAMFS="genkernel" # "genkernel" "dracut" # genkernel default
+KERNEL_INSTALL="./.config" # Use value to compile kernel manully, blank
 KEYMAP="uk" # Console keyboard layout.
 LOCALE="en_GB" # UTF-8 only.
 MARCH="native" # Leave blank to not include option.
