@@ -9,6 +9,7 @@ BOOTLOADER="systemd-boot" # "efistub" "systemd-boot"
 CORES=4
 FS="zfs" # "zfs" # Root filesystem, options needed for dependencies and services.
 FS_ROOT="zroot/gentoo"
+GENKERNEL="genkernel --makeopts=-j$CORES all" # genkernel install command, used if not manual install
 HOSTNAME="gentoo-pc" # Hostname, ignored if left blank.
 INIT="systemd" # "systemd"
 KERNEL_INITRAMFS="dracut" # "dracut" "genkernel" # Defaults to genkernel.
