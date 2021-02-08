@@ -134,18 +134,18 @@ all() {
 	echo 'source /etc/profile&&/usr/sbin/env-update;cd /root/gentoo-install-scripts/&&source ./install;setup_portage&&locale&&fstab&&kernel&&services&&bootloader' | env -i HOME=/root TERM=$TERM chroot /mnt/gentoo/ /bin/bash -s
 	eval $CHROOT_POST_HOOK
 }
+HELP='Available optinos are (when using multiple optinos, use in following order):
+bootstrap	# Install tarball, setup initial root config files.
+mount_virtual	# Mount virtual filesystems.
+setup_portage	# Sync portage and update packages / install dependencies.
+locale
+fstab
+kernel
+services	# Install services and their package dependencies.
+bootloader
+all		# Ececute all previous options in order of appearence.'
 while true; do
 	case "$1" in
-		--help ) echo 'Available optinos are (when using multiple optinos, use in following order):
---bootstrap	# Install tarball, setup initial root config files.
---mount_virtual # Mount virtual filesystems.
---setup_portage # Sync portage and update packages / install dependencies.
---locale
---fstab
---kernel
---services	# Install services and their package dependencies.
---bootloader
---all		# Ececute all previous options in order of appearence.'; break ;;
 		--bootstrap ) bootstrap;;
 		--mount_virtual ) mount_virtual;;
 		--setup_portage ) setup_portage;;
