@@ -145,17 +145,18 @@ services	# Install services and their package dependencies.
 bootloader
 all		# Ececute all previous options in order of appearence.'
 while true; do
-	case "$1" in
-		--bootstrap ) bootstrap;;
-		--mount_virtual ) mount_virtual;;
-		--setup_portage ) setup_portage;;
-		--locale ) locale;;
-		--fstab ) fstab;;
-		--kernel ) kernel;;
-		--services ) services;;
-		--bootloader ) bootloader;;
-		--all ) all ;;
-		* ) break ;;
-	esac
-	shift
+ case "$1" in
+  help ) echo $HELP; exit ;;
+  bootstrap ) bootstrap;;
+  mount-virtual ) mountVirtual;;
+  setup-portage ) setupPortage;;
+  locale ) locale;;
+  fstab ) fstab;;
+  kernel ) kernel;;
+  services ) services;;
+  bootloader ) bootloader;;
+  all ) all;;
+  * ) exit;;
+ esac
+ shift
 done
