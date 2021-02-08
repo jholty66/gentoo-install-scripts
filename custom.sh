@@ -16,9 +16,9 @@ KERNEL_INITRAMFS="dracut" # "dracut" "genkernel" # Defaults to genkernel.
 KEYMAP="uk" # Console keyboard layout.
 LOCALE="en_GB" # UTF-8 only.
 MARCH="native" # Leave blank to not include option.
-PORTAGE_TMPFS="13G" # Size of RAM, blank to disable. https://wiki.gentoo.org/wiki/Portage_TMPDIR_on_tmpfs#:~:text=When%20emerging%20packages%20it%20is,and%20reduces%20HDD%2FSSD%20wear.
+PORTAGE_TMPFS="12G" # Size of RAM for portage tmpfs, blank to disable.
 TOOLS="cronie dosfstools dhcpcd gentoolkit" # Packages installed after kernel compile.
-SECURE_PASSWD="t" # "t" "nil"
+SECURE_PASSWD="nil" # "t" "nil"
 SERVICES="cronie dhcpcd"
 # Hooks.
 CHROOT_PRE_HOOK=""
