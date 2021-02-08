@@ -1,10 +1,5 @@
-# Alias.
-alias cp="cp -v"
-alias mv="mv -v"
-alias rm="rm -v"
 alias emerge="emerge --ask=n"
-alias grep="grep --color=auto"
-# Shell variable.
+
 BOOTLOADER="systemd-boot" # "efistub" "systemd-boot"
 CORES=4
 FS="zfs" # "zfs" # Root filesystem, options needed for dependencies and services.
@@ -20,8 +15,3 @@ PORTAGE_TMPFS="12G" # Size of RAM for portage tmpfs, blank to disable.
 TOOLS="cronie dosfstools dhcpcd gentoolkit" # Packages installed after kernel compile.
 SECURE_PASSWD="nil" # "t" "nil"
 SERVICES="cronie dhcpcd"
-# Hooks.
-CHROOT_PRE_HOOK=""
-CHROOT_POST_HOOK=""
-KERNEL_PRE_HOOK=""
-KERNEL_POST_HOOK=""
