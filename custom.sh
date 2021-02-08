@@ -7,7 +7,7 @@ FS_ROOT="zroot/gentoo"
 GENKERNEL="genkernel --makeopts=-j$CORES all" # genkernel install command, used if not manual install
 HOSTNAME="gentoo-pc" # Hostname, ignored if left blank.
 INIT="systemd" # "systemd"
-KERNEL_INITRAMFS="dracut" # "dracut" "genkernel" # Defaults to genkernel.
+INITRAMFS="genkernel" # "genkernel" "dracut" # genkernel default
 KEYMAP="uk" # Console keyboard layout.
 LOCALE="en_GB" # UTF-8 only.
 MARCH="native" # Leave blank to not include option.
